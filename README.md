@@ -27,6 +27,21 @@
 
 - **DB 종류** : PostgreSQL
 
+### 📂 DB 연동 방법별 코드 위치
+
+- JPA(PostgreSQL,h2)용 Repository 구현체:
+
+  `src/main/java/com/example/online_community/repository/jpa/`
+
+
+- 메모리 개발용 Repository 구현체:
+
+  `src/main/java/com/example/online_community/repository/memory/`
+
+### PostgreSQL, H2 Database 연동방법 
+
+`properties/` : 해당 폴더위치에 방법이 나와있습니다. 참고부탁드립니다!
+
 ### 주요 테이블 설명
 
 | 테이블명          | 설명                                  |
