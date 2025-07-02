@@ -25,13 +25,15 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
+              fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,
+               fetch = FetchType.LAZY)
     private List<Rating> ratings = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "likedUsers")
+    @ManyToMany(mappedBy = "likedUsers", fetch = FetchType.LAZY)
     private Set<Course> likedCourses = new HashSet<>();
 
     public User(){}
