@@ -52,6 +52,7 @@ public class AuthController {
         return "login";
     }
 
+    /*
     @PostMapping("/login")
     public String login(
             @Valid @ModelAttribute("loginForm") User from,
@@ -79,4 +80,5 @@ public class AuthController {
         session.invalidate();
         return "redirect:/courses";
     }
+    */
 }

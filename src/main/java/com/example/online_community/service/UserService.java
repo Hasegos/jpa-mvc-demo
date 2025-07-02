@@ -13,5 +13,5 @@ public interface UserService {
     void delete (Long id); // 정보 삭제
 
     Optional<User> findByUsername(String username); // 이메일 기준 찾기
-    User authenticate(String username, String password); // 회원 검사
+    //User authenticate(String username, String password); // 회원 검사
 }

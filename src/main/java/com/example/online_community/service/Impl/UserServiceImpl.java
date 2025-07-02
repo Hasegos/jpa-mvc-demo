@@ -4,6 +4,7 @@ import com.example.online_community.model.User;
 import com.example.online_community.repository.UserRepository;
 import com.example.online_community.service.UserService;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /* 회원 가입 */
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
             System.out.println(user.getUsername());
             throw new RuntimeException("이미 존재하는 회원입니다.");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -61,14 +65,16 @@ public class UserServiceImpl implements UserService {
     }
 
     /* 이메일, 비밀번호 확인 */
-    @Override
-    public User authenticate(String username, String password) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 아이디입니다."));
+    /*
+        @Override
+        public User authenticate(String username, String password) {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지않는 아이디입니다."));
 
-        if(!password.equals(user.getPassword())){
-            throw new IllegalArgumentException("비밀번호가 올바르지 않습니다.");
+            if(!passwordEncoder.matches(password,user.getPassword())){
+                throw new IllegalArgumentException("비밀번호가 올바르지 않습니다.");
+            }
+            return user;
         }
-        return user;
-    }
+    */
 }
