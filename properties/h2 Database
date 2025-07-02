@@ -1,0 +1,19 @@
+=== application.properties ==
+
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=원하는 아이디
+spring.datasource.password=원하는 비밀번호
+spring.jpa.hibernate.ddl-auto=update
+spring.h2.console.enabled=true
+
+application 에 등록시켜주면된다.
+
+== h2-console ==
+
+https://your-app-url.onrender.com/h2-console
+JDBC URL: `jdbc:h2:mem:testdb
+Username: 설정한 아이디
+Password: 설정한 비밀번호
+
+/h2-console 로 접속하면 Iframe 형식으로 db를 조작할 수 있다.

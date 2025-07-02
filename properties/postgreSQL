@@ -1,0 +1,9 @@
+=== application.properties ===
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/course_community
+spring.datasource.username=설정한 아이디 (default :postgres)
+spring.datasource.password=설정한 비밀번호
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+properties 에 등록만시켜주면된다.
+이후에 db에 접속하면 연동되는걸 확인할 수 있다.
