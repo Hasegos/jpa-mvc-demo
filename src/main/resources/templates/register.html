@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - 강의 평가 커뮤니티</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .logo-subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .register-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #adb5bd;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon input {
+            padding-left: 45px;
+        }
+
+        .input-icon::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        .input-icon.username::before {
+            content: '👤';
+        }
+
+        .input-icon.password::before {
+            content: '🔒';
+        }
+
+        .input-icon.confirm-password::before {
+            content: '🔐';
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .password-strength.weak {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .password-strength.medium {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .password-strength.strong {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .password-match {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .password-match.match {
+            color: #28a745;
+        }
+
+        .password-match.no-match {
+            color: #dc3545;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .terms-agreement {
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            margin-top: 3px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .terms-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .terms-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-register {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-link a {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .home-link a:hover {
+            color: #495057;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 25px;
+            }
+        }
+
+        /* 로딩 애니메이션 */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-register.loading {
+            pointer-events: none;
+        }
+
+        .btn-register.loading .loading {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="logo">
+        <div class="logo-icon">🎓</div>
+        <div class="logo-text">강의 평가 커뮤니티</div>
+        <div class="logo-subtitle">학습의 시작, 함께해요</div>
+    </div>
+
+    <h2 class="register-title">회원가입</h2>
+
+    <div th:if="${error}" class="error-message" th:text="${error}">에러 메시지</div>
+    <div th:if="${success}" class="success-message" th:text="${success}">성공 메시지</div>
+
+    <form th:action="@{/register}" method="post" id="registerForm">
+        <div class="form-group">
+            <label for="username">사용자명 <span class="required">*</span></label>
+            <div class="input-icon username">
+                <input type="text" id="username" name="username"
+                       placeholder="사용자명을 입력하세요" required
+                       minlength="3" maxlength="20"/>
+            </div>
+            <div class="form-help">3-20자의 영문, 숫자, 한글을 사용할 수 있습니다.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">비밀번호 <span class="required">*</span></label>
+            <div class="input-icon password">
+                <input type="password" id="password" name="password"
+                       placeholder="비밀번호를 입력하세요" required
+                       minlength="6"/>
+            </div>
+            <div class="password-strength" id="passwordStrength"></div>
+            <div class="form-help">최소 6자 이상, 영문과 숫자를 포함하는 것을 권장합니다.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">비밀번호 확인 <span class="required">*</span></label>
+            <div class="input-icon confirm-password">
+                <input type="password" id="confirmPassword" name="confirmPassword"
+                       placeholder="비밀번호를 다시 입력하세요" required/>
+            </div>
+            <div class="password-match" id="passwordMatch"></div>
+        </div>
+
+        <div class="terms-agreement">
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    <a href="#" class="terms-link">이용약관</a> 및
+                    <a href="#" class="terms-link">개인정보처리방침</a>에 동의합니다. <span class="required">*</span>
+                </label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="marketing" name="marketing">
+                <label for="marketing">
+                    마케팅 정보 수신에 동의합니다. (선택)
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-register" id="registerBtn" disabled>
+            <span class="loading"></span>
+            <span class="btn-text">회원가입</span>
+        </button>
+    </form>
+
+    <div class="login-link">
+        <p>이미 계정이 있으신가요? <a th:href="@{/login}">로그인</a></p>
+    </div>
+
+    <div class="home-link">
+        <a th:href="@{/courses}">← 홈으로 돌아가기</a>
+    </div>
+</div>
+
+<script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const termsCheckbox = document.getElementById('terms');
+    const registerBtn = document.getElementById('registerBtn');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const passwordMatch = document.getElementById('passwordMatch');
+
+    // 비밀번호 강도 체크
+    function checkPasswordStrength(password) {
+        if (password.length === 0) return '';
+
+        let strength = 0;
+        const checks = {
+            length: password.length >= 8,
+            lower: /[a-z]/.test(password),
+            upper: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        strength = Object.values(checks).filter(Boolean).length;
+
+        if (strength <= 2) return 'weak';
+        if (strength <= 3) return 'medium';
+        return 'strong';
+    }
+
+    // 비밀번호 입력시 강도 표시
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        const strength = checkPasswordStrength(password);
+
+        passwordStrength.style.display = password ? 'block' : 'none';
+        passwordStrength.className = `password-strength ${strength}`;
+
+        switch(strength) {
+            case 'weak':
+                passwordStrength.textContent = '약함: 더 복잡한 비밀번호를 사용하세요';
+                break;
+            case 'medium':
+                passwordStrength.textContent = '보통: 특수문자를 추가하면 더 안전합니다';
+                break;
+            case 'strong':
+                passwordStrength.textContent = '강함: 안전한 비밀번호입니다';
+                break;
+            default:
+                passwordStrength.style.display = 'none';
+        }
+
+        checkPasswordMatch();
+        updateSubmitButton();
+    });
+
+    // 비밀번호 확인 일치 체크
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (!confirmPassword) {
+            passwordMatch.style.display = 'none';
+            return false;
+        }
+
+        passwordMatch.style.display = 'block';
+
+        if (password === confirmPassword) {
+            passwordMatch.className = 'password-match match';
+            passwordMatch.textContent = '✓ 비밀번호가 일치합니다';
+            return true;
+        } else {
+            passwordMatch.className = 'password-match no-match';
+            passwordMatch.textContent = '✗ 비밀번호가 일치하지 않습니다';
+            return false;
+        }
+    }
+
+    confirmPasswordInput.addEventListener('input', function() {
+        checkPasswordMatch();
+        updateSubmitButton();
+    });
+
+    // 사용자명 유효성 검사
+    usernameInput.addEventListener('input', function() {
+        updateSubmitButton();
+    });
+
+    // 약관 동의 체크
+    termsCheckbox.addEventListener('change', function() {
+        updateSubmitButton();
+    });
+
+    // 제출 버튼 활성화/비활성화
+    function updateSubmitButton() {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const termsAgreed = termsCheckbox.checked;
+
+        const isValid = username.length >= 3 &&
+                       password.length >= 6 &&
+                       password === confirmPassword &&
+                       termsAgreed;
+
+        registerBtn.disabled = !isValid;
+    }
+
+    // 폼 제출시 로딩 애니메이션
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return;
+        }
+
+        const btn = document.getElementById('registerBtn');
+        const btnText = btn.querySelector('.btn-text');
+
+        btn.classList.add('loading');
+        btnText.textContent = '가입 중...';
+    });
+
+    // 폼 유효성 검사
+    function validateForm() {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (username.length < 3) {
+            alert('사용자명은 3자 이상이어야 합니다.');
+            usernameInput.focus();
+            return false;
+        }
+
+        if (password.length < 6) {
+            alert('비밀번호는 6자 이상이어야 합니다.');
+            passwordInput.focus();
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            alert('비밀번호가 일치하지 않습니다.');
+            confirmPasswordInput.focus();
+            return false;
+        }
+
+        if (!termsCheckbox.checked) {
+            alert('이용약관에 동의해주세요.');
+            termsCheckbox.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    // 약관 링크 클릭 이벤트 (임시)
+    document.querySelectorAll('.terms-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('약관 내용은 준비 중입니다.');
+        });
+    });
+
+    // 페이지 로드시 첫 번째 입력 필드에 포커스
+    window.addEventListener('load', function() {
+        usernameInput.focus();
+    });
+</script>
+</body>
+</html>

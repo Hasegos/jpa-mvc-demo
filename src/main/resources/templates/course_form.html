@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 강의 등록</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 1rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .url-preview {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border-left: 3px solid #667eea;
+            display: none;
+        }
+
+        .url-preview a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .url-preview a:hover {
+            text-decoration: underline;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .category-option {
+            position: relative;
+        }
+
+        .category-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .category-label {
+            display: block;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .category-option input[type="radio"]:checked + .category-label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .category-label:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .category-option input[type="radio"]:checked + .category-label:hover {
+            background: #5a67d8;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 0.9rem;
+        }
+
+        .char-counter {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .char-counter.warning {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-submit {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>새 강의 등록</h1>
+        <a th:href="@{/courses}" class="back-btn">목록으로</a>
+    </div>
+
+    <div class="form-container">
+        <h2 class="form-title">📚 강의 정보를 입력해주세요</h2>
+
+        <div th:if="${error}" class="error-message" th:text="${error}">에러 메시지</div>
+        <div th:if="${success}" class="success-message" th:text="${success}">성공 메시지</div>
+
+        <form th:action="@{/courses}" method="post" id="courseForm">
+            <div class="form-group">
+                <label for="title">강의 제목 <span class="required">*</span></label>
+                <input type="text" id="title" name="title" required
+                       placeholder="예: Spring Boot 완전정복" maxlength="100"/>
+                <div class="char-counter" id="titleCounter">0 / 100</div>
+                <div class="form-help">강의의 핵심 내용을 잘 표현하는 제목을 입력해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">강의 설명 <span class="required">*</span></label>
+                <textarea id="description" name="description" required
+                          placeholder="강의 내용, 대상자, 학습 목표 등을 자세히 설명해주세요." maxlength="1000"></textarea>
+                <div class="char-counter" id="descriptionCounter">0 / 1000</div>
+                <div class="form-help">학습자가 강의를 이해할 수 있도록 상세한 설명을 작성해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="url">강의 URL</label>
+                <input type="url" id="url" name="url"
+                       placeholder="https://example.com/course"/>
+                <div class="url-preview" id="urlPreview">
+                    <strong>미리보기: </strong>
+                    <a href="#" target="_blank" id="urlLink"></a>
+                </div>
+                <div class="form-help">YouTube, Udemy, Coursera 등의 강의 링크를 입력해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label>카테고리 <span class="required">*</span></label>
+                <div class="category-grid">
+                    <div class="category-option">
+                        <input type="radio" id="programming" name="category" value="프로그래밍" required>
+                        <label for="programming" class="category-label">💻 프로그래밍</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="design" name="category" value="디자인">
+                        <label for="design" class="category-label">🎨 디자인</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="marketing" name="category" value="마케팅">
+                        <label for="marketing" class="category-label">📈 마케팅</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="business" name="category" value="비즈니스">
+                        <label for="business" class="category-label">💼 비즈니스</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="language" name="category" value="어학">
+                        <label for="language" class="category-label">🗣️ 어학</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="other" name="category" value="기타">
+                        <label for="other" class="category-label">📚 기타</label>
+                    </div>
+                </div>
+                <div class="form-help">강의 내용에 가장 적합한 카테고리를 선택해주세요.</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">🚀 강의 등록하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 글자 수 카운터
+    function updateCharCounter(input, counter, maxLength) {
+        const currentLength = input.value.length;
+        counter.textContent = `${currentLength} / ${maxLength}`;
+
+        if (currentLength > maxLength * 0.9) {
+            counter.classList.add('warning');
+        } else {
+            counter.classList.remove('warning');
+        }
+    }
+
+    // 제목 글자 수 카운터
+    const titleInput = document.getElementById('title');
+    const titleCounter = document.getElementById('titleCounter');
+    titleInput.addEventListener('input', () => {
+        updateCharCounter(titleInput, titleCounter, 100);
+    });
+
+    // 설명 글자 수 카운터
+    const descriptionInput = document.getElementById('description');
+    const descriptionCounter = document.getElementById('descriptionCounter');
+    descriptionInput.addEventListener('input', () => {
+        updateCharCounter(descriptionInput, descriptionCounter, 1000);
+    });
+
+    // URL 미리보기
+    const urlInput = document.getElementById('url');
+    const urlPreview = document.getElementById('urlPreview');
+    const urlLink = document.getElementById('urlLink');
+
+    urlInput.addEventListener('input', () => {
+        const url = urlInput.value.trim();
+        if (url && isValidUrl(url)) {
+            urlLink.href = url;
+            urlLink.textContent = url;
+            urlPreview.style.display = 'block';
+        } else {
+            urlPreview.style.display = 'none';
+        }
+    });
+
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // 폼 유효성 검사
+    document.getElementById('courseForm').addEventListener('submit', (e) => {
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const category = document.querySelector('input[name="category"]:checked');
+
+        if (!title) {
+            alert('강의 제목을 입력해주세요.');
+            e.preventDefault();
+            return;
+        }
+
+        if (!description) {
+            alert('강의 설명을 입력해주세요.');
+            e.preventDefault();
+            return;
+        }
+
+        if (!category) {
+            alert('카테고리를 선택해주세요.');
+            e.preventDefault();
+            return;
+        }
+
+        const url = document.getElementById('url').value.trim();
+        if (url && !isValidUrl(url)) {
+            alert('올바른 URL 형식을 입력해주세요.');
+            e.preventDefault();
+            return;
+        }
+    });
+
+    // 초기 카운터 설정
+    updateCharCounter(titleInput, titleCounter, 100);
+    updateCharCounter(descriptionInput, descriptionCounter, 1000);
+</script>
+</body>
+</html>

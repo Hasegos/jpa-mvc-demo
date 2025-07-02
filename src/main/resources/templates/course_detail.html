@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${course?.title ?: '강의 상세'}">강의 상세</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .course-header {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .course-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .course-category {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+        }
+
+        .course-url {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .course-url a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .course-url a:hover {
+            text-decoration: underline;
+        }
+
+        .course-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .rating-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .rating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rating-stars {
+            font-size: 2rem;
+            color: #ffc107;
+        }
+
+        .rating-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rating-score {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .rating-count {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-like {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-like:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .btn-liked {
+            background: #27ae60;
+            color: white;
+        }
+
+        .rating-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .rating-form h4 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #dee2e6;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+        }
+
+        .btn-submit {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background: #218838;
+        }
+
+        .comments-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .comments-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid #667eea;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .comment-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .comment-content {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .comment-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .comment-form h4 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-actions {
+            margin-top: 15px;
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 30px;
+            background: #e9ecef;
+            border-radius: 8px;
+            color: #6c757d;
+        }
+
+        .login-prompt a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .course-header {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 1.8rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .rating-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>강의 상세</h1>
+        <a th:href="@{/courses}" class="back-btn">목록으로</a>
+    </div>
+
+    <div class="course-header">
+        <h2 class="course-title" th:text="${course?.title ?: '제목 정보 없음'}">강의 제목</h2>
+        <span class="course-category" th:text="${course?.category ?: '기타'}">카테고리</span>
+
+        <div class="course-meta">
+            <div class="meta-item">
+                <span>👤</span>
+                <span>등록자: <strong th:text="${course?.author?.username ?: '익명'}">등록자</strong></span>
+            </div>
+            <div class="meta-item">
+                <span>📅</span>
+                <span th:text="${course?.createdAt != null ? #temporals.format(course.createdAt, 'yyyy-MM-dd HH:mm') : '날짜 정보 없음'}">2024-01-01 12:00</span>
+            </div>
+        </div>
+
+        <div class="course-url" th:if="${course?.url != null}">
+            <strong>강의 URL: </strong>
+            <a th:href="${course.url}" target="_blank" th:text="${course.url}">강의 링크</a>
+        </div>
+
+        <div class="course-description" th:text="${course?.description ?: '설명이 없습니다.'}">강의 설명</div>
+    </div>
+
+    <div class="rating-section">
+        <div class="rating-header">
+            <div class="rating-display">
+                <div class="rating-stars">★★★★☆</div>
+                <div class="rating-info">
+                    <div class="rating-score">4.2</div>
+                    <div class="rating-count">15개 평가</div>
+                </div>
+            </div>
+
+            <div class="action-buttons" th:if="${user != null}">
+                <form th:action="@{/courses/{id}/like(id=${course?.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-like">
+                        <span>❤️</span>
+                        <span>좋아요 (23)</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="rating-form" th:if="${user != null}">
+            <h4>이 강의를 평가해주세요</h4>
+            <form th:action="@{/courses/{id}/rate(id=${course?.id})}" method="post">
+                <div class="star-rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <input type="hidden" name="score" id="rating-score" value="0">
+                <button type="submit" class="btn-submit">평가 등록</button>
+            </form>
+        </div>
+
+        <div class="login-prompt" th:if="${user == null}">
+            <p><a th:href="@{/login}">로그인</a>하시면 평가와 좋아요를 등록할 수 있습니다.</p>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3 class="comments-title">댓글</h3>
+
+        <div th:if="${course?.comments == null or #lists.isEmpty(course.comments)}">
+            <p>아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!</p>
+        </div>
+
+        <div th:each="comment : ${course?.comments ?: {}}" class="comment">
+            <div class="comment-header">
+                <span class="comment-author" th:text="${comment?.user?.username ?: '익명'}">사용자</span>
+                <span class="comment-date" th:text="${comment?.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '날짜 정보 없음'}">2024-01-01 12:00</span>
+            </div>
+            <div class="comment-content" th:text="${comment?.content ?: '내용이 없습니다.'}">댓글 내용</div>
+        </div>
+
+        <div class="comment-form" th:if="${user != null}">
+            <h4>댓글 작성</h4>
+            <form th:action="@{/courses/{id}/comments(id=${course?.id})}" method="post">
+                <textarea name="content" placeholder="댓글을 작성해주세요..." required></textarea>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">댓글 등록</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="login-prompt" th:if="${user == null}">
+            <p><a th:href="@{/login}">로그인</a>하시면 댓글을 작성할 수 있습니다.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 별점 클릭 이벤트
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            document.getElementById('rating-score').value = rating;
+
+            // 별점 표시 업데이트
+            document.querySelectorAll('.star').forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+
+        // 호버 효과
+        star.addEventListener('mouseenter', function() {
+            const rating = this.getAttribute('data-rating');
+            document.querySelectorAll('.star').forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#dee2e6';
+                }
+            });
+        });
+    });
+
+    // 마우스 아웃시 원래 상태로
+    document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        const currentRating = document.getElementById('rating-score').value;
+        document.querySelectorAll('.star').forEach((s, index) => {
+            if (index < currentRating) {
+                s.style.color = '#ffc107';
+            } else {
+                s.style.color = '#dee2e6';
+            }
+        });
+    });
