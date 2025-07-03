@@ -101,8 +101,6 @@ public class CourseController {
     public String like(
             @PathVariable Long id,
             HttpSession session){
-
-        System.out.println("▶▶▶ like() 호출, id=" + id + ", user=" + session.getAttribute("user"));
         User user = (User) session.getAttribute("user");
         if(user != null){
             courseService.toggleLike(id,user);
@@ -122,7 +120,8 @@ public class CourseController {
 
         User user = (User)session.getAttribute("user");
         if(user == null){
-            return "redirect:/login";
+            model.addAttribute("error","로그인을 먼저해주세요");
+            return "login";
         }
 
         if(title.isBlank() || description.isBlank() || category.isBlank()){

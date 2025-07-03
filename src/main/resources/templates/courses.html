@@ -302,11 +302,13 @@
 <body>
 <div class="header">
     <div class="header-content">
-        <div class="logo">🎓 강의 평가 커뮤니티</div>
+        <div class="logo"><a th:href="@{/}" style="text-decoration-line:none;">🎓 강의 평가 커뮤니티</a></div>
         <div class="auth-info">
             <div th:if="${user != null}">
                 <span>안녕하세요, <strong th:text="${user?.username}">사용자</strong>님!</span>
-                <a th:href="@{/logout}" class="btn btn-outline">로그아웃</a>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-outline">로그아웃</button>
+                </form>
             </div>
             <div th:if="${user == null}">
                 <a th:href="@{/login}" class="btn btn-outline">로그인</a>
